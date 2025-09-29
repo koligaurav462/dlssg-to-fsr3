@@ -142,6 +142,7 @@ target_include_directories(
 	PRIVATE
 		"${FIDELITYFX_SDK_DIR}/include"
 		"${FIDELITYFX_SDK_DIR}/src/components"
+		"${FIDELITYFX_SDK_DIR}/src/shared"
 )
 
 target_link_libraries(

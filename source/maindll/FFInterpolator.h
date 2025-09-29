@@ -1,26 +1,28 @@
 #pragma once
 
 #include <FidelityFX/host/ffx_frameinterpolation.h>
+#include <functional>
+#include <optional>
 
 struct FFInterpolatorDispatchParameters
 {
 	FfxCommandList CommandList;
 
-    FfxDimensions2D RenderSize;
+	FfxDimensions2D RenderSize;
 	FfxDimensions2D OutputSize;
 
-    FfxResource InputColorBuffer;
-    FfxResource InputHUDLessColorBuffer;
-    FfxResource InputDepth;
-    FfxResource InputMotionVectors;
+	FfxResource InputColorBuffer;
+	FfxResource InputHUDLessColorBuffer;
+	FfxResource InputDepth;
+	FfxResource InputMotionVectors;
 	FfxResource InputDistortionField;
 
-    FfxResource InputOpticalFlowVector;
-    FfxResource InputOpticalFlowSceneChangeDetection;
-    FfxFloatCoords2D OpticalFlowScale;
-    int OpticalFlowBlockSize;
+	FfxResource InputOpticalFlowVector;
+	FfxResource InputOpticalFlowSceneChangeDetection;
+	FfxFloatCoords2D OpticalFlowScale;
+	int OpticalFlowBlockSize;
 
-    FfxResource OutputInterpolatedColorBuffer;
+	FfxResource OutputInterpolatedColorBuffer;
 
 	bool MotionVectorsFullResolution;
 	bool MotionVectorJitterCancellation;
@@ -36,7 +38,7 @@ struct FFInterpolatorDispatchParameters
 	bool DebugTearLines;
 	bool DebugView;
 
-    float CameraNear;
+	float CameraNear;
 	float CameraFar;
 	float CameraFovAngleVertical;
 	FfxFloatCoords2D MinMaxLuminance;
@@ -52,6 +54,8 @@ private:
 	FfxInterface m_SharedBackendInterface;
 	FfxUInt32 m_SharedEffectContextId = {};
 
+	std::function<void(FfxCommandList, const FfxResource *, const FfxResource *)> m_CopyTextureFn;
+
 	FfxFrameInterpolationContextDescription m_ContextDescription = {};
 	std::optional<FfxFrameInterpolationContext> m_FSRContext;
 	bool m_ContextFlushPending = false;
@@ -59,6 +63,7 @@ private:
 	std::optional<FfxResourceInternal> m_DilatedDepth;
 	std::optional<FfxResourceInternal> m_DilatedMotionVectors;
 	std::optional<FfxResourceInternal> m_ReconstructedPrevDepth;
+	std::optional<FfxResourceInternal> m_HUDLessCompatibleColor;
 
 public:
 	FFInterpolator(
@@ -66,7 +71,8 @@ public:
 		const FfxInterface& SharedBackendInterface,
 		FfxUInt32 SharedEffectContextId,
 		uint32_t MaxRenderWidth,
-		uint32_t MaxRenderHeight);
+		uint32_t MaxRenderHeight,
+		std::function<void(FfxCommandList, const FfxResource *, const FfxResource *)> CopyTextureFn);
 	FFInterpolator(const FFInterpolator&) = delete;
 	FFInterpolator& operator=(const FFInterpolator&) = delete;
 	~FFInterpolator();
@@ -76,4 +82,6 @@ public:
 private:
 	FfxErrorCode CreateContextDeferred(const FFInterpolatorDispatchParameters& Parameters);
 	void DestroyContext();
+	void ApplyContextWorkarounds();
+	FfxResource GetHUDLessCompatibleResource(const FfxResource& Reference, FfxDimensions2D OutputSize);
 };

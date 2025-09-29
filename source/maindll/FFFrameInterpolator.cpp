@@ -115,7 +115,11 @@ void FFFrameInterpolator::Create(NGXInstanceParameters *NGXParameters)
 		m_SharedBackendInterface,
 		*m_SharedEffectContextId,
 		m_SwapchainWidth,
-		m_SwapchainHeight);
+		m_SwapchainHeight,
+		[this](FfxCommandList commandList, const FfxResource *destination, const FfxResource *source)
+	{
+		CopyTexture(commandList, destination, source);
+	});
 }
 
 void FFFrameInterpolator::Destroy()
