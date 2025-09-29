@@ -63,9 +63,6 @@ FfxErrorCode FFFrameInterpolator::Dispatch(void *CommandList, NGXInstanceParamet
 		if (!BuildFrameInterpolationParameters(&fsrFiDispatchDesc, NGXParameters))
 			return FFX_ERROR_INVALID_ARGUMENT;
 
-		// Allow backend to adjust params (e.g., convert formats) without bypassing HUD-less.
-		OnBeforeDispatchAdjustParams(fsrFiDispatchDesc);
-
 		fsrFiDispatchDesc.DebugView = g_EnableDebugOverlay;
 		fsrFiDispatchDesc.DebugTearLines = g_EnableDebugTearLines;
 

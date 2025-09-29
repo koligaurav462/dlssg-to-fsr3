@@ -13,11 +13,10 @@
 #include "NGX/NvNGX.h"
 #include "FFInterfaceWrapper.h"
 
-// The FidelityFX SDK 1.1.4 hides BackendContext_DX12 inside ffx_dx12.cpp. Our custom resource
+// The FidelityFX SDK hides BackendContext_DX12 inside ffx_dx12.cpp. Our custom resource
 // allocation path (to integrate NGX allocation callbacks) needs access to its layout. We mirror
 // the struct definition here verbatim so that references compile. This must stay token-identical
-// to the upstream definition to satisfy the ODR. If AMD exposes this publicly again, this block
-// can be removed.
+// to the upstream definition to satisfy the ODR.
 #ifndef DLSSG_TO_FSR3_BACKENDCONTEXT_DX12_MIRROR_GUARD
 #define DLSSG_TO_FSR3_BACKENDCONTEXT_DX12_MIRROR_GUARD
 typedef struct BackendContext_DX12
