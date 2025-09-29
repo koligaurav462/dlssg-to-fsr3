@@ -181,7 +181,7 @@ FfxErrorCode FFInterpolator::CreateContextDeferred(const FFInterpolatorDispatchP
 		return status;
 	}
 
-	ApplyContextWorkarounds();
+	OverrideDefaultDistortionField();
 
 	FfxFrameInterpolationSharedResourceDescriptions fsrFiSharedDescriptions = {};
 	status = ffxFrameInterpolationGetSharedResourceDescriptions(&m_FSRContext.value(), &fsrFiSharedDescriptions);
@@ -261,7 +261,8 @@ void FFInterpolator::DestroyContext()
 	m_HUDLessCompatibleColor.reset();
 }
 
-void FFInterpolator::ApplyContextWorkarounds()
+// Replace the SDK's UNORM default distortion field with the SNORM version we need.
+void FFInterpolator::OverrideDefaultDistortionField()
 {
 	if (!m_FSRContext)
 		return;

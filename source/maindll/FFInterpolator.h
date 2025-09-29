@@ -82,6 +82,6 @@ public:
 private:
 	FfxErrorCode CreateContextDeferred(const FFInterpolatorDispatchParameters& Parameters);
 	void DestroyContext();
-	void ApplyContextWorkarounds();
+	void OverrideDefaultDistortionField();
 	FfxResource GetHUDLessCompatibleResource(const FfxResource& Reference, FfxDimensions2D OutputSize);
 };
